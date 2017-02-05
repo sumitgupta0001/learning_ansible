@@ -1,0 +1,9 @@
+---
+- hosts: testing
+  roles:
+    - common
+    - nginx
+    - mongo
+    - falcon-project
+
+- hosts: testing02

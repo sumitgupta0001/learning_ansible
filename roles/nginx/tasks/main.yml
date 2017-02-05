@@ -1,0 +1,43 @@
+- name: Install Nginx
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items: nginx_packages
+  sudo : yes
+  notify : remove default nignx conf
+  tags:
+    - setup
+    - Web
+    - nginx
+
+
+- name: Start the nginx
+  action: service name=nginx state=started
+  sudo : yes
+  tags:
+    - setup
+    - Web
+    - nginx
+
+- name: copy nginx conf file with root password credentials
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner={{ansible_ssh_user}} mode=0600
+  sudo : yes
+  notify : restart nginx
+  tags:
+    - setup
+    - Web
+    - nginx
+
+- name: copy project conf file with root password credentials
+  template: src=nginx_project.conf.j2 dest=/etc/nginx/sites-enabled/nginx_project.conf owner={{ansible_ssh_user}} mode=0600
+  sudo : yes
+  notify : restart nginx
+  tags:
+    - setup
+    - deploy
+    - Web
+    - nginx
+
+- name: Force Restart Nginx
+  service: name=nginx state=restarted
+  sudo : yes
+  tags:
+    - deploy

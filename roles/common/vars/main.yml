@@ -1,0 +1,8 @@
+---
+
+system_packages:
+  - iftop
+  - iotop
+  - tree
+  - htop
+  - build-essential

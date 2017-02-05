@@ -1,0 +1,25 @@
+--- 
+- name: update apt-get
+  apt: update_cache=yes
+  sudo: yes
+  tags:
+    - common
+- name: Common | set timezone
+  command: timedatectl set-timezone Asia/Kolkata
+  sudo: yes
+  tags:
+    - common
+- name: upgrade ubuntu server
+  #apt: upgrade=yes
+  raw: apt-get upgrade -qq
+  sudo: yes
+  notify:
+    - reboot
+  tags:
+    - common
+- name: Common| Install required system packages.
+  apt: pkg={{ item }} state=installed
+  with_items: system_packages
+  sudo: yes
+  tags:
+    - common

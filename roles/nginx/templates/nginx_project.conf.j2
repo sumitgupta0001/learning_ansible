@@ -1,0 +1,39 @@
+server {
+        listen *:80;
+        client_max_body_size 4G;
+        access_log {{project_log_dir}}/{{project_name}}_access_log;
+        error_log {{project_log_dir}}/{{project_name}}_error_log;
+
+        location /
+        {
+          #change this to location of the panel folder
+           alias /srv/MailFront/;
+        }
+        location /templates
+        {
+          alias /srv/MailFront/templates/;
+        }
+
+        location /static/video
+
+        {
+          root {{project_root}}/{{project_name}}/{{project_src_name}}/main;
+        }
+        location /static/jpeg
+        {
+          root {{project_root}}/{{project_name}}/{{project_src_name}}/main;
+        }
+        location /reports
+        {
+          root /srv/mailserver/src/main;
+        }
+
+        
+        location /api
+         {
+                    root {{project_root}}/{{project_name}}/{{project_src_name}};
+                    uwsgi_read_timeout 180;
+                    uwsgi_pass unix://{{project_sock_file}};
+                    include uwsgi_params;
+         }
+}

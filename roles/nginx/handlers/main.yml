@@ -1,0 +1,8 @@
+- name: restart nginx
+  action: service name=nginx state=restarted
+  sudo : yes
+
+- name: remove default nignx conf
+  command : rm /etc/nginx/sites-enabled/default
+  notify: restart nginx
+  sudo : yes

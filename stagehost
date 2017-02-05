@@ -1,0 +1,20 @@
+test_Staging ansible_ssh_user=debian ansible_ssh_host=128.199.xxx.xx private=10.xxx.xx.x ansible_ssh_port=1200
+
+[testing]
+test_Staging
+
+
+[testing:vars]
+project_name=testing
+project_root=/srv
+project_log_dir=/var/log/test
+project_src_name=src
+project_reqirement_file=/srv/testing/requirements.txt
+project_sock_file=/tmp/test.sock
+project_framework=falcon
+project_repo=git@gitlab.com:testing.git
+
+test_Staging02 ansible_ssh_user=debian ansible_ssh_host=128.199.yyy.yy private=10.yyy.yy.y ansible_ssh_port=1200
+
+[testing02]
+test_Staging02

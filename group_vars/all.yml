@@ -1,0 +1,29 @@
+---
+
+worker_process_count: 24
+worker_connection_count: 700
+keepalive_timeout: 65
+nginx_gzip: true
+project_name: testing
+project_root: /srv
+project_log_dir: /var/log/test
+project_src_name: src
+project_reqirement_file: /srv/testing/requirements.txt
+project_sock_file: /tmp/test.sock
+project_repo: git@gitlab.com:testing.git
+repo_branch: develop
+
+enviorment_variables:
+  STAGING:
+    MONGO_IP: 
+    MONGO_PORT: 27017
+    MONGO_DB: falcon_db
+    DBUSER: admin
+    DBPASS: admin
+    
+  TESTING:
+    MONGO_IP: 
+    MONGO_PORT: 27017
+    MONGO_DB: TESTING
+    DBUSER: admin
+    DBPASS: admin

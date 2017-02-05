@@ -1,0 +1,58 @@
+---
+
+- name: Install required system packages.
+  apt: pkg={{ item }} state=installed update-cache=yes
+  with_items: system_packages
+  sudo: yes
+  tags:
+    - setup
+    - Web
+
+
+- name: Create the project_root directory.
+  file: state=directory path={{ project_root }}
+  sudo: yes
+  tags:
+    - deploy
+    - Web
+    - setup
+
+- name: Update permission for the project_root
+  file: path={{ project_root }} owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} mode=0775 state=directory
+  sudo: yes
+  tags:
+    - deploy
+    - setup
+    - Web
+
+- name: Create the project log directory.
+  file: state=directory path={{ project_log_dir }}
+  sudo: yes
+  tags:
+    - Web
+    - setup
+
+- name: Update the project log directory.
+  file: group={{ansible_ssh_user}} owner={{ansible_ssh_user}} mode=777 state=directory path={{ project_log_dir }}
+  sudo: yes
+  tags:
+    - Web
+    - setup
+
+
+- name: Pull Repository from git
+  git: accept_hostkey=yes repo={{project_repo}} dest={{project_root}}/{{project_name}}  version={{repo_branch}}
+  notify: restart nginx
+  notify: restart uwsgi
+  tags:
+    - setup
+    - Web
+    - deploy
+
+- name: Install Requirements
+  pip: requirements={{ project_reqirement_file }}
+  sudo: yes
+  tags:
+    - Web
+    - setup
+    - deploy

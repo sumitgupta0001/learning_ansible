@@ -1,0 +1,72 @@
+---
+-   name: Adding mongo key server
+    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=EA312927
+    become: true
+    tags:
+        - setup
+        - mongo
+
+-   name: Adding mongo repo
+    apt_repository: repo='deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse' filename='mongodb.3.2'
+    become: true
+    tags:
+        - setup
+        - mongo
+
+
+-   name: Installing And Upgrading
+    apt: update_cache=yes upgrade=dist force=yes autoremove=yes
+    become: true
+    tags:
+        - setup
+        - mongo
+
+-   name: Install Mongodb
+    apt: name=mongodb-org state=latest force=yes autoremove=yes
+    become: true
+    tags:
+        - setup
+        - mongo
+
+-   name: Create a config file
+    template: src=mongodb.conf.j2 dest=/etc/mongod.conf owner={{ansible_user}} mode=0644
+    become: true
+    tags:
+        - setup
+        - mongo 
+    notify:
+        - Restart Mongodb
+
+-   name: Copy replicaset intiate js
+    template: src=initiate.js.j2 dest=/home/debian/initiate.js
+    become: true
+    tags:
+        - mongo 
+        - setup
+
+-   name: Create User
+    raw: mongo --host {{hostvars[groups.Mongo.0]['private']}} < /home/debian/initiate.js
+    tags:
+        - mongo 
+        - setup
+
+-   name: insert/update "Security" configuration block in /etc/mongod.conf
+    blockinfile:
+        dest: /etc/mongod.conf
+        marker: "#security"
+        content: |
+                security:
+                    authorization: enabled
+    become: true
+    tags:
+        - mongo 
+        - setup
+
+
+
+-   name: MongoDB | Ensure deamon is running correctly
+    service: name=mongod.service state=restarted
+    become : true
+    tags:
+      - setup
+      - mongo

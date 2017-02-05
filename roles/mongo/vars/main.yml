@@ -1,0 +1,2 @@
+pidfile: /tmp/mongod.pid
+pid_dir: /tmp/
